@@ -24,3 +24,16 @@ if num_stores:
         if cleaned_store_data is not None:
             # Upload to DB
             db_connector.upload_to_db(cleaned_store_data, 'dim_store_details')
+
+# Step 1: Extract from S3
+s3_url = 's3://data-handling-public/products.csv'
+products_df = data_extractor.extract_from_s3(s3_url)
+
+# Step 2: Convert weights
+products_df = data_cleaning.convert_product_weights(products_df)
+
+# Step 3: Clean product data
+products_df = data_cleaning.clean_products_data(products_df)
+
+# Step 4: Upload to DB
+db_connector.upload_to_db(products_df, 'dim_products')
