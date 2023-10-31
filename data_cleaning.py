@@ -5,21 +5,18 @@ import re
 logging.basicConfig(level=logging.INFO)
 
 class DataCleaning:
-    # Existing methods here ...
+    
 
     def clean_user_data(self, df):
         df.dropna(inplace=True)
-        # More data cleaning logic here
         return df
 
     def clean_card_data(self, df):
         df.dropna(inplace=True)
-        # Additional cleaning logic here
         return df
 
     def clean_store_data(self, df):
         df.dropna(inplace=True)
-        # Additional cleaning logic here
         return df
 
     def convert_product_weights(self, df):
@@ -36,7 +33,6 @@ class DataCleaning:
     
     def clean_products_data(self, df):
         df.dropna(inplace=True)
-        # Add any additional cleaning logic here
         return df
   
     
