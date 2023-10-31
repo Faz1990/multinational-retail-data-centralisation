@@ -19,18 +19,18 @@ class DatabaseConnector:
         engine = create_engine(f"postgresql://{creds['RDS_USER']}:{creds['RDS_PASSWORD']}@{creds['RDS_HOST']}:{creds['RDS_PORT']}/{creds['RDS_DATABASE']}")
         return engine
 
-    def list_db_tables(self):  # Removed 'engine' parameter
+    def list_db_tables(self):  
         meta = MetaData()
-        meta.reflect(bind=self.engine)  # Use 'self.engine' directly
+        meta.reflect(bind=self.engine)  
         return [table.name for table in meta.tables.values()]
 
     def upload_to_db(self, df, table_name):
         try:
-            with self.engine.connect() as connection:  # using context manager for connection
-                with connection.begin() as transaction:  # explicit transaction
+            with self.engine.connect() as connection:  
+                with connection.begin() as transaction:  
                     df.to_sql(table_name, connection, if_exists='replace')
-                    transaction.commit()  # explicit commit
-        except SQLAlchemyError as e:  # catching all SQLAlchemy errors
+                    transaction.commit()  
+        except SQLAlchemyError as e: 
             logging.error(f"An SQLAlchemy error occurred: {str(e)}")
-        except Exception as e:  # general exception
+        except Exception as e:  
             logging.error(f"An error occurred: {str(e)}")
