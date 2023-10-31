@@ -21,8 +21,8 @@ class DataExtractor:
         try:
             return response.json()['number_of_stores']
         except KeyError:
-            print("Key 'number_of_stores' not found in API response.")
-            return None  # You can return None or some other default value
+            logging.warning("Key 'number_of_stores' not found in API response.")
+            return None
 
 
     def retrieve_stores_data(self, api_endpoint, headers, num_stores):
