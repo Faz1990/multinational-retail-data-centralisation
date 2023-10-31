@@ -8,9 +8,9 @@ data_cleaning = DataCleaning()
 data_extractor = DataExtractor()
 
 # List available tables in the database
-available_tables = db_connector.list_db_tables()  # Removed the 'engine' argument
+available_tables = db_connector.list_db_tables()  
 
-# Assume the table containing user data is named 'legacy_users'
+
 if 'legacy_users' in available_tables:
     
     # Extract Data from 'legacy_users' into DataFrame
