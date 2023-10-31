@@ -26,10 +26,14 @@ else:
 # Fetch PDF Data
 raw_card_data = data_extractor.retrieve_pdf_data()
 
-# Clean card data
-cleaned_card_data = data_cleaning.clean_card_data(raw_card_data)
+# Check if raw_card_data is None
+if raw_card_data is not None:
 
-# Upload to local database
-if cleaned_card_data is not None:
-    db_connector.upload_to_db(cleaned_card_data, 'dim_card_details', engine=local_engine)
+    # Clean card data
+    cleaned_card_data = data_cleaning.clean_card_data(raw_card_data)
 
+    # Upload to local database
+    if cleaned_card_data is not None:
+        db_connector.upload_to_db(cleaned_card_data, 'dim_card_details', engine=local_engine)
+else:
+    print("Failed to retrieve or parse PDF data.")
