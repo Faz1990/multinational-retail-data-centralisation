@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import logging
 import boto3
+import tabula
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,7 +25,6 @@ class DataExtractor:
             logging.warning("Key 'number_of_stores' not found in API response.")
             return None
 
-
     def retrieve_stores_data(self, api_endpoint, headers, num_stores):
         store_list = []
         for i in range(1, num_stores + 1):
@@ -36,10 +36,26 @@ class DataExtractor:
         s3 = boto3.client('s3')
         bucket_name = 'data-handling-public'
         object_key = 'products.csv'
-
-        # Download the file from S3 to a local file
         s3.download_file(bucket_name, object_key, 'local_products.csv')
-
-        # Read the CSV into a DataFrame
         df = pd.read_csv('local_products.csv')
         return df
+
+    # Retrieve PDF Data
+    def retrieve_pdf_data(self, link="https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf"):
+        try:
+            response = requests.get(link)
+            if response.status_code == 200:
+                with open("local_file.pdf", "wb") as f:
+                    f.write(response.content)
+
+                dfs = tabula.read_pdf("local_file.pdf", pages='all', multiple_tables=True)
+                merged_df = pd.concat(dfs, ignore_index=True)
+                
+                return merged_df
+            else:
+                logging.warning(f"Failed to download PDF. HTTP Status Code: {response.status_code}")
+                return None
+        except Exception as e:
+            logging.error(f"An error occurred: {str(e)}")
+            return None
+

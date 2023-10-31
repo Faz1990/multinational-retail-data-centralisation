@@ -7,23 +7,29 @@ db_connector = DatabaseConnector()
 data_cleaning = DataCleaning()
 data_extractor = DataExtractor()
 
-# List available tables in the database
-available_tables = db_connector.list_db_tables()  
+# Initialize Database Engines
+source_engine = db_connector.engine
+local_engine = db_connector.local_engine
 
+# List available tables in the source database
+available_tables = db_connector.list_db_tables(source_engine)
 
 if 'legacy_users' in available_tables:
-    
-    # Extract Data from 'legacy_users' into DataFrame
+    # Extract and clean legacy user data
     legacy_users_data = data_extractor.read_rds_table(db_connector, 'legacy_users')
-    
-    # Clean the user data
     cleaned_user_data = data_cleaning.clean_user_data(legacy_users_data)
-    
-    # Upload cleaned data to new table 'dim_users'
     if cleaned_user_data is not None:
-        db_connector.upload_to_db(cleaned_user_data, 'dim_users')
-
+        db_connector.upload_to_db(cleaned_user_data, 'dim_users', local_engine)
 else:
-    print("The table 'legacy_users' was not found in the database.")
+    print("The table 'legacy_users' was not found in the source database.")
 
+# Fetch PDF Data
+raw_card_data = data_extractor.retrieve_pdf_data()
+
+# Clean card data
+cleaned_card_data = data_cleaning.clean_card_data(raw_card_data)
+
+# Upload to local database
+if cleaned_card_data is not None:
+    db_connector.upload_to_db(cleaned_card_data, 'dim_card_details', engine=local_engine)
 
