@@ -12,8 +12,11 @@ class DataCleaning:
         return df
 
     def clean_card_data(self, df):
+        if df is None:
+           logging.warning("DataFrame is None. Skipping cleaning.")
+           return None
+    
         df.dropna(inplace=True)
-        return df
 
     def clean_store_data(self, df):
         df.dropna(inplace=True)
