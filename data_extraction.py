@@ -14,8 +14,7 @@ class DataExtractor:
     def list_db_tables(self, engine):
         return engine.table_names()
 
-    def read_rds_table(self, db_connector_instance, table_name):
-        engine = db_connector_instance.init_db_engine()
+    def read_rds_table(self, engine, table_name):
         return pd.read_sql_table(table_name, engine)
 
     def list_number_of_stores(self, api_endpoint, headers):
