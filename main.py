@@ -84,8 +84,11 @@ local_engine = db_connector.local_engine
 
 orders_table_name = "orders_table"  
 orders_df = data_extractor.read_rds_table(db_connector.engine, orders_table_name)
+print("Data Extracted Successfully")
 
 # Clean the orders data
 cleaned_orders_df = DataCleaning.clean_orders_data(orders_df)
+print("Data Cleaned Successfully")
 
 db_connector.upload_to_db(cleaned_orders_df, 'orders_table', db_connector.engine)
+print("Successful Upload")
