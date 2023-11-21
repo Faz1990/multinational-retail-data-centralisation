@@ -14,7 +14,7 @@
 ## Personal Initiative and Learning
 🛠️ **AiCore Project**: This project is a pivotal component of my extensive training in 'Data and AI' at AiCore. 
 
-🚨 **Note**: The work presented in this repository is a product of my individual effort and learning journey. Unlike many learning projects, the code and strategies implemented here were not derived from structured tutorials. Each line of code, decision, and strategy has been independently conceptualized and executed, based on fundamental principles and guidance from AiCore instructors. This project showcases my ability to apply theoretical knowledge in practical, real-world scenarios, emphasizing problem-solving, critical thinking, and technical skills in data engineering.
+⚙️ **Important Note**: This repository is the culmination of my self-driven efforts and learning trajectory. Distinct from numerous tutorial-led projects, the approaches and code within this repository originated from my independent ideation and execution. Every aspect of this project, from the initial code line to the overarching strategies, has been personally developed, guided by foundational concepts and insights provided by instructors at AiCore. This endeavor exemplifies my commitment to applying academic concepts to solve practical, real-life data engineering challenges, underscoring my skills in analytical thinking, problem resolution, and technical proficiency in the realm of data engineering.
 
 
 ## Installation
