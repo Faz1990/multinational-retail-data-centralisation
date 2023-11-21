@@ -19,7 +19,7 @@ Example:
 git clone https://github.com/Faz1990/multinational-retail-data-centralisation.git
 
 # Navigate to the project directory
-cd your-project-name
+cd multinational-retail-data-centralisation
 
 # Install required dependencies
 pip install -r requirements.txt
@@ -34,7 +34,7 @@ python main.py
 
 ```
 
-This will execute the data processing pipeline.
+Running this script will execute the data processing pipeline, which involves extracting data from various sources, cleaning it, and uploading it to the database.
 
 ## File Structure
 
