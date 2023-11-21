@@ -64,5 +64,9 @@ class DataCleaning:
         df.drop(columns=['first_name', 'last_name', '1'], inplace=True, errors='ignore')
         return df
 
-  
+    @staticmethod
+    def clean_date_details_data(df):
+        df.dropna(inplace=True)  # Remove rows with null values
+        df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')  # Standardize column names
+        return df
     

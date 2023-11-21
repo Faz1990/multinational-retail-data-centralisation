@@ -78,3 +78,10 @@ class DataExtractor:
             logging.error(f"An error occurred: {str(e)}")
             return None
 
+    def extract_json_from_s3(self, json_url):
+        response = requests.get(json_url)
+        if response.ok:
+            return response.json()
+        else:
+            logging.error(f"Failed to download JSON data. HTTP Status Code: {response.status_code}")
+            return None

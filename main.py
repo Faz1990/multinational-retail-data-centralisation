@@ -82,13 +82,42 @@ local_engine = db_connector.local_engine
 #db_connector.upload_to_db(cleaned_product_data, 'dim_products', local_engine)
 #print("Successful Upload")
 
-orders_table_name = "orders_table"  
-orders_df = data_extractor.read_rds_table(db_connector.engine, orders_table_name)
-print("Data Extracted Successfully")
+#orders_table_name = "orders_table"  
+#orders_df = data_extractor.read_rds_table(db_connector.engine, orders_table_name)
+#print("Data Extracted Successfully")
 
 # Clean the orders data
-cleaned_orders_df = DataCleaning.clean_orders_data(orders_df)
-print("Data Cleaned Successfully")
+#cleaned_orders_df = DataCleaning.clean_orders_data(orders_df)
+#print("Data Cleaned Successfully")
 
-db_connector.upload_to_db(cleaned_orders_df, 'orders_table', db_connector.engine)
-print("Successful Upload")
+#print("Columns before resetting index:", cleaned_orders_df.columns)
+
+#columns_to_drop = [col for col in ['level_0', 'index'] if col in cleaned_orders_df.columns]
+#if columns_to_drop:
+    #cleaned_orders_df.drop(columns=columns_to_drop, inplace=True)
+
+
+#print("Columns after resetting index:", cleaned_orders_df.columns)
+
+#db_connector.upload_to_db(cleaned_orders_df, 'orders_table', local_engine)
+#print("Successful Upload")
+
+# Extract JSON data from S3
+json_url = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
+date_details_data = data_extractor.extract_json_from_s3(json_url)
+
+if date_details_data is not None:
+    print("JSON Data Extracted Successfully")
+
+    # Convert JSON data to DataFrame
+    date_details_df = pd.DataFrame(date_details_data)
+
+    # Clean the date details data
+    cleaned_date_details_df = DataCleaning.clean_date_details_data(date_details_df)
+    print("Date Details Data Cleaned Successfully")
+
+    # Upload to the database
+    db_connector.upload_to_db(cleaned_date_details_df, 'dim_date_times', db_connector.engine)
+    print("Date Details Data Successfully Uploaded")
+else:
+    print("Failed to extract JSON data.")
