@@ -28,7 +28,11 @@ pip install -r requirements.txt
 ## Usage
 
 Run the main script
+
+```bash
 python main.py
+
+```
 
 This will execute the data processing pipeline.
 
