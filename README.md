@@ -27,7 +27,7 @@ pip install -r requirements.txt
 ```
 ## Usage
 
-# Run the main script
+Run the main script
 python main.py
 
 This will execute the data processing pipeline.
@@ -35,10 +35,15 @@ This will execute the data processing pipeline.
 ## File Structure
 
 multinational-retail-data-centralisation/
+
 ├── database_utils.py    # Handles database connections
+
 ├── data_cleaning.py     # Cleans and prepares data
+
 ├── data_extraction.py   # Extracts data from various sources
+
 ├── main.py              # Main script orchestrating the process
+
 └── README.md
 
 
