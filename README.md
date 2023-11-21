@@ -1,4 +1,4 @@
-# Project Title
+# Multinational-Retail-Data-Centralisation
 
 ## Table of Contents
 1. [Project Description](#project-description)
@@ -16,7 +16,7 @@ Instructions for installing your project.
 Example:
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/your-project-name.git
+git clone https://github.com/Faz1990/multinational-retail-data-centralisation.git
 
 # Navigate to the project directory
 cd your-project-name
