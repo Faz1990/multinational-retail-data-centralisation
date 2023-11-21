@@ -9,7 +9,9 @@
 6. [License](#license)
 
 ## Personal Initiative and Learning
-⚙️ Important Note: This repository is the culmination of my self-driven efforts and learning trajectory. Distinct from numerous tutorial-led projects, the approaches and code within this repository originated from my independent ideation and execution. Every aspect of this project, from the initial code line to the overarching strategies, has been personally developed, guided by foundational concepts and insights provided by instructors at AiCore. This endeavor exemplifies my commitment to applying academic concepts to solve practical, real-life data engineering challenges, underscoring my skills in analytical thinking, problem resolution, and technical proficiency in the realm of data engineering.
+🛠️ **AiCore Project**: This project is a pivotal component of my extensive training in 'Data and AI' at AiCore. 
+
+⚙️ **Important Note**: This repository is the culmination of my self-driven efforts and learning trajectory. Distinct from numerous tutorial-led projects, the approaches and code within this repository originated from my independent ideation and execution. Every aspect of this project, from the initial code line to the overarching strategies, has been personally developed, guided by foundational concepts and insights provided by instructors at AiCore. This endeavor exemplifies my commitment to applying academic concepts to solve practical, real-life data engineering challenges, underscoring my skills in analytical thinking, problem resolution, and technical proficiency in the realm of data engineering.
 
 ## Project Description
 > This project involves the development of a data centralization system for a multinational retail chain. The primary goal is to automate the extraction, cleaning, and storage of sales data from various sources, including RDS databases, S3 buckets, and JSON files. This system enhances data accessibility and reliability, significantly improving decision-making processes. Through this project, I've deepened my understanding of Python, SQL, AWS services, and data engineering principles.
