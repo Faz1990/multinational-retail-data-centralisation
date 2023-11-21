@@ -1,6 +1,7 @@
 from database_utils import DatabaseConnector
 from data_cleaning import DataCleaning
 from data_extraction import DataExtractor
+import pandas as pd
 
 # Initialize classes
 db_connector = DatabaseConnector()
@@ -117,7 +118,7 @@ if date_details_data is not None:
     print("Date Details Data Cleaned Successfully")
 
     # Upload to the database
-    db_connector.upload_to_db(cleaned_date_details_df, 'dim_date_times', db_connector.engine)
+    db_connector.upload_to_db(cleaned_date_details_df, 'dim_date_times', local_engine)
     print("Date Details Data Successfully Uploaded")
 else:
     print("Failed to extract JSON data.")
