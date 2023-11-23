@@ -23,17 +23,39 @@ class DataCleaning:
         return df
 
     @staticmethod
-    def convert_product_weights(weight):
-        """Converts weights to kilograms."""
+    def convert_to_kg(weight):
+        """
+        Converts weight to kilograms.
+        Assumes 1 ml = 1 g, 1000 g = 1 kg.
+        """
+        if pd.isna(weight):
+            return None
+        if isinstance(weight, float):
+            # Assuming the weight is already in kilograms
+            return weight
         if isinstance(weight, str):
-            # Remove non-numeric characters and convert to float
-            numeric_weight = float(re.sub('[^0-9.]', '', weight))
+            # Remove non-numeric characters except for the decimal point
+            numeric_weight = float(''.join(filter(lambda x: x.isdigit() or x == '.', weight)))
 
-            if 'g' in weight or 'ml' in weight:
-                # Convert grams or milliliters to kilograms
-                return numeric_weight / 1000
-        # Return the weight if it's not a string or doesn't contain 'g' or 'ml'
-        return weight
+            # Convert to kilograms if needed
+            if 'ml' in weight or 'g' in weight:
+                return numeric_weight / 1000  # Convert grams or milliliters to kilograms
+            elif 'kg' in weight:
+                return numeric_weight  # Already in kilograms
+            else:
+                # Handle other units as needed
+                pass
+        else:
+            # Handle non-string, non-float types
+            return None
+
+    @staticmethod
+    def convert_product_weights(df):
+        """
+        Cleans up the weight column and converts weights to kilograms.
+        """
+        df['weight'] = df['weight'].apply(DataCleaning.convert_to_kg)
+        return df
     
     @staticmethod
     def is_valid_uuid(uuid_to_test, version=4):
@@ -87,7 +109,7 @@ class DataCleaning:
 
         # Ensure 'staff_numbers' fit within SMALLINT range
         df['staff_numbers'] = pd.to_numeric(df['staff_numbers'], downcast='integer', errors='coerce')
-        
+
         return df
         
         

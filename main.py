@@ -42,47 +42,47 @@ local_engine = db_connector.local_engine
     #print("Failed to retrieve or parse PDF data.")
 
 # API Information
-headers = {"x-api-key": "yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX"}
-number_of_stores_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores"
-store_details_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}"
+#headers = {"x-api-key": "yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX"}
+#number_of_stores_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores"
+#store_details_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}"
 
 # Step 1: List the number of stores
-num_stores = data_extractor.list_number_of_stores(number_of_stores_endpoint, headers)
+#num_stores = data_extractor.list_number_of_stores(number_of_stores_endpoint, headers)
 
-if num_stores > 0:
+#if num_stores > 0:
      #Step 2: Extract store data
-    store_data = data_extractor.retrieve_stores_data(store_details_endpoint, headers, num_stores)
-    print("Successful data extraction.")
+    #store_data = data_extractor.retrieve_stores_data(store_details_endpoint, headers, num_stores)
+    #print("Successful data extraction.")
     
     # Inspect the DataFrame columns
-    print("DataFrame columns:", store_data.columns)
+    #print("DataFrame columns:", store_data.columns)
 
     # Step 3: Clean store data
-    critical_columns = ['address', 'store_code'] 
-    cleaned_store_data = data_cleaning.clean_store_data(store_data, critical_columns)
+    #critical_columns = ['address', 'store_code'] 
+    #cleaned_store_data = data_cleaning.clean_store_data(store_data, critical_columns)
 
     # Step 4: Upload cleaned data to database
-    db_connector.upload_to_db(cleaned_store_data, 'dim_store_details', local_engine)
-else:
-    print("No stores to retrieve based on the API response.")
+    #db_connector.upload_to_db(cleaned_store_data, 'dim_store_details', local_engine)
+#else:
+    #print("No stores to retrieve based on the API response.")
 
 # Extract data from S3
-#s3_url = "s3://data-handling-public/products.csv"
-#product_data = data_extractor.extract_from_s3(s3_url)
-#print("successful Extraction")
+s3_url = "s3://data-handling-public/products.csv"
+product_data = data_extractor.extract_from_s3(s3_url)
+print("successful Extraction")
 
 # Convert product weights
-#product_data = data_cleaning.convert_product_weights(product_data)
-#print("Successful Conversion")
+product_data = data_cleaning.convert_product_weights(product_data)
+print("Successful Conversion")
 
 # Clean products data
-#critical_columns_product = ['product_name', 'product_price', 'category']
-#cleaned_product_data = data_cleaning.clean_products_data(product_data, critical_columns_product)
-#print("Products Successfully cleaned")
+critical_columns_product = ['product_name', 'product_price', 'category']
+cleaned_product_data = data_cleaning.clean_products_data(product_data, critical_columns_product)
+print("Products Successfully cleaned")
 
-# Step 4: Upload cleaned product data to database
-#db_connector.upload_to_db(cleaned_product_data, 'dim_products', local_engine)
-#print("Successful Upload")
+# Upload cleaned product data to database
+db_connector.upload_to_db(cleaned_product_data, 'dim_products', local_engine)
+print("Successful Upload")
 
 #orders_table_name = "orders_table"  
 #orders_df = data_extractor.read_rds_table(db_connector.engine, orders_table_name)
