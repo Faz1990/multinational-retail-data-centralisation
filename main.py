@@ -3,10 +3,11 @@ from data_cleaning import DataCleaning
 from data_extraction import DataExtractor
 import pandas as pd
 
+if __name__ == "__main__":
 # Initialize classes
-db_connector = DatabaseConnector()
-data_cleaning = DataCleaning()
-data_extractor = DataExtractor()
+    db_connector = DatabaseConnector()
+    data_cleaning = DataCleaning()
+    data_extractor = DataExtractor()
 
 # Initialize Database Engines
 source_engine = db_connector.engine
@@ -17,12 +18,12 @@ local_engine = db_connector.local_engine
 
 #if 'legacy_users' in available_tables:
     # Extract and clean legacy user data
-    #legacy_users_data = data_extractor.read_rds_table(db_connector, 'legacy_users')
+    #legacy_users_data = data_extractor.read_rds_table(db_connector.engine, 'legacy_users')
     #cleaned_user_data = data_cleaning.clean_user_data(legacy_users_data)
     #if cleaned_user_data is not None:
         #db_connector.upload_to_db(cleaned_user_data, 'dim_users', local_engine)
 #else:
-   # print("The table 'legacy_users' was not found in the source database.")
+    #print("The table 'legacy_users' was not found in the source database.")
 
 # Fetch PDF Data
 #raw_card_data = data_extractor.retrieve_pdf_data()
@@ -41,29 +42,29 @@ local_engine = db_connector.local_engine
     #print("Failed to retrieve or parse PDF data.")
 
 # API Information
-#headers = {"x-api-key": "yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX"}
-#number_of_stores_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores"
-#store_details_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}"
+headers = {"x-api-key": "yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX"}
+number_of_stores_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores"
+store_details_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}"
 
 # Step 1: List the number of stores
-#num_stores = data_extractor.list_number_of_stores(number_of_stores_endpoint, headers)
+num_stores = data_extractor.list_number_of_stores(number_of_stores_endpoint, headers)
 
-#if num_stores > 0:
-    # Step 2: Extract store data
-    #store_data = data_extractor.retrieve_stores_data(store_details_endpoint, headers, num_stores)
-    #print("Successful data extraction.")
+if num_stores > 0:
+     #Step 2: Extract store data
+    store_data = data_extractor.retrieve_stores_data(store_details_endpoint, headers, num_stores)
+    print("Successful data extraction.")
     
     # Inspect the DataFrame columns
-    #print("DataFrame columns:", store_data.columns)
+    print("DataFrame columns:", store_data.columns)
 
     # Step 3: Clean store data
-    #critical_columns = ['address', 'store_code'] 
-    #cleaned_store_data = data_cleaning.clean_store_data(store_data, critical_columns)
+    critical_columns = ['address', 'store_code'] 
+    cleaned_store_data = data_cleaning.clean_store_data(store_data, critical_columns)
 
     # Step 4: Upload cleaned data to database
-    #db_connector.upload_to_db(cleaned_store_data, 'dim_store_details', local_engine)
-#else:
-    #print("No stores to retrieve based on the API response.")
+    db_connector.upload_to_db(cleaned_store_data, 'dim_store_details', local_engine)
+else:
+    print("No stores to retrieve based on the API response.")
 
 # Extract data from S3
 #s3_url = "s3://data-handling-public/products.csv"
@@ -104,21 +105,21 @@ local_engine = db_connector.local_engine
 #print("Successful Upload")
 
 # Extract JSON data from S3
-json_url = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
-date_details_data = data_extractor.extract_json_from_s3(json_url)
+#json_url = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
+#date_details_data = data_extractor.extract_json_from_s3(json_url)
 
-if date_details_data is not None:
-    print("JSON Data Extracted Successfully")
+#if date_details_data is not None:
+    #print("JSON Data Extracted Successfully")
 
     # Convert JSON data to DataFrame
-    date_details_df = pd.DataFrame(date_details_data)
+    #date_details_df = pd.DataFrame(date_details_data)
 
     # Clean the date details data
-    cleaned_date_details_df = DataCleaning.clean_date_details_data(date_details_df)
-    print("Date Details Data Cleaned Successfully")
+    #cleaned_date_details_df = DataCleaning.clean_date_details_data(date_details_df)
+    #print("Date Details Data Cleaned Successfully")
 
     # Upload to the database
-    db_connector.upload_to_db(cleaned_date_details_df, 'dim_date_times', local_engine)
-    print("Date Details Data Successfully Uploaded")
-else:
-    print("Failed to extract JSON data.")
+    #db_connector.upload_to_db(cleaned_date_details_df, 'dim_date_times', local_engine)
+    #print("Date Details Data Successfully Uploaded")
+#else:
+    #print("Failed to extract JSON data.")

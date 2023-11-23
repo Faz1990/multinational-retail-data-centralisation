@@ -1,6 +1,7 @@
 import pandas as pd
 import logging
 import re
+import uuid
 
 logging.basicConfig(level=logging.INFO)
 
@@ -33,12 +34,36 @@ class DataCleaning:
                 return numeric_weight / 1000
         # Return the weight if it's not a string or doesn't contain 'g' or 'ml'
         return weight
+    
+    @staticmethod
+    def is_valid_uuid(uuid_to_test, version=4):
+        try:
+            uuid_obj = uuid.UUID(uuid_to_test, version=version)
+            return str(uuid_obj) == uuid_to_test.lower()
+        except ValueError:
+            return False
 
     def clean_user_data(self, df):
-        df = self.drop_na_values(df)
-        df = self.clean_column_names(df)
-        
+        # Drop rows based on critical columns
+        critical_columns = ['index', 'user_uuid']
+        df = df.dropna(subset=critical_columns)
+
+        # Correcting date formats with handling of NaT values
+        df['date_of_birth'] = pd.to_datetime(df['date_of_birth'], errors='coerce')
+        df['join_date'] = pd.to_datetime(df['join_date'], errors='coerce')
+        df = df.dropna(subset=['date_of_birth', 'join_date'])
+
+        # Truncate country_code and handle UUIDs
+        df['country_code'] = df['country_code'].apply(lambda x: x[:3] if pd.notnull(x) else x)
+        df['user_uuid'] = df['user_uuid'].apply(
+            lambda x: x if self.is_valid_uuid(x) else str(uuid.uuid4())
+    )
+
+        # Final check for NULL values
+        print(df.isnull().sum())
+
         return df
+        
 
     def clean_card_data(self, df):
         if df is None:
@@ -50,7 +75,19 @@ class DataCleaning:
         return df
 
     def clean_store_data(self, df, critical_columns):
-        df = self.drop_na_values(df, critical_columns)
+        # Convert textual 'NULL' to actual NULL values
+        df.replace('NULL', pd.NA, inplace=True)
+
+        # Handle non-numeric data in 'longitude' and 'latitude'
+        df['longitude'] = pd.to_numeric(df['longitude'], errors='coerce')
+        df['latitude'] = pd.to_numeric(df['latitude'], errors='coerce')
+
+        # Convert 'opening_date' to datetime or set to NULL if invalid
+        df['opening_date'] = pd.to_datetime(df['opening_date'], errors='coerce')
+
+        # Ensure 'staff_numbers' fit within SMALLINT range
+        df['staff_numbers'] = pd.to_numeric(df['staff_numbers'], downcast='integer', errors='coerce')
+        
         return df
         
         
