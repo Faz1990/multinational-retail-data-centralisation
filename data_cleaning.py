@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import uuid
+import re
 from geopy.geocoders import Nominatim
 
 
