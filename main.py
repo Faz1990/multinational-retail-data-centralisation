@@ -24,28 +24,26 @@ available_tables = db_connector.list_db_tables(source_engine)
 
 if 'legacy_users' in available_tables:
     # Extract and clean legacy user data
-    legacy_users_data = data_extractor.read_rds_table(db_connector.engine, 'legacy_users')
+    legacy_users_data = data_extractor.read_rds_table(source_engine, 'legacy_users')
     cleaned_user_data = data_cleaning.clean_user_data(legacy_users_data)
     if cleaned_user_data is not None:
         db_connector.upload_to_db(cleaned_user_data, 'dim_users', local_engine)
 else:
     print("The table 'legacy_users' was not found in the source database.")
 
+
 # Fetch PDF Data
 raw_card_data = data_extractor.retrieve_pdf_data()
 
-# Check if raw_card_data is None
 if raw_card_data is not None:
-
     # Clean card data
     cleaned_card_data = data_cleaning.clean_card_data(raw_card_data)
-
-    # Upload to local database
     if cleaned_card_data is not None:
-        db_connector.upload_to_db(cleaned_card_data, 'dim_card_details', engine=local_engine)
+        db_connector.upload_to_db(cleaned_card_data, 'dim_card_details', local_engine)
         print("successful upload to postgreSQL")
 else:
     print("Failed to retrieve or parse PDF data.")
+
 
 # API Information
 headers = {"x-api-key": "yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX"}
@@ -66,14 +64,12 @@ if num_stores > 0:
     # Step 3: Clean store data
     critical_columns = ['address', 'store_code'] 
     cleaned_store_data = data_cleaning.clean_store_data(store_data, critical_columns)
-
-    # Step 4: Upload cleaned data to database
     db_connector.upload_to_db(cleaned_store_data, 'dim_store_details', local_engine)
-#else:
+else:
     print("No stores to retrieve based on the API response.")
 
 # Extract data from S3
-s3_url = "s3://data-handling-public/products.csv"
+s3_url = "s3://your_bucket_name/products.csv"
 product_data = data_extractor.extract_from_s3(s3_url)
 print("successful Extraction")
 
@@ -90,7 +86,8 @@ print("Products Successfully cleaned")
 db_connector.upload_to_db(cleaned_product_data, 'dim_products', local_engine)
 print("Successful Upload")
 
-orders_table_name = "orders_table"  
+# Extract and Clean Order Data
+orders_table_name = "orders_table"
 orders_df = data_extractor.read_rds_table(db_connector.engine, orders_table_name)
 print("Data Extracted Successfully")
 
@@ -98,20 +95,12 @@ print("Data Extracted Successfully")
 cleaned_orders_df = DataCleaning.clean_orders_data(orders_df)
 print("Data Cleaned Successfully")
 
-print("Columns before resetting index:", cleaned_orders_df.columns)
-
-columns_to_drop = [col for col in ['level_0', 'index'] if col in cleaned_orders_df.columns]
-if columns_to_drop:
-    cleaned_orders_df.drop(columns=columns_to_drop, inplace=True)
-
-
-print("Columns after resetting index:", cleaned_orders_df.columns)
-
+# Upload cleaned order data to database
 db_connector.upload_to_db(cleaned_orders_df, 'orders_table', local_engine)
 print("Successful Upload")
 
 # Extract JSON data from S3
-json_url = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
+json_url = "https://your_bucket_name/date_details.json"
 date_details_data = data_extractor.extract_json_from_s3(json_url)
 
 if date_details_data is not None:
