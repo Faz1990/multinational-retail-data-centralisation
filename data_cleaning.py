@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import uuid
 import re
+from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 from geopy.geocoders import Nominatim
 
 
@@ -161,16 +162,16 @@ class DataCleaning:
         df[column] = df[column].astype(str)
         return df[df[column].str.contains(r'^[a-zA-ZÄÖÜäöüßé\s\.\-\']+$', na=False)]
     
-    def clean_country_code(self, df, column):
-        """
-        Clean country codes.
-        :param df: DataFrame containing country codes.
-        :param column: Column name of the country codes.
-        :return: DataFrame with cleaned country codes.
-        """
-        df[column] = df[column].str.replace('GGB', 'GB')
-        country_code_pattern = r'\b[A-Z]{2}\b'
-        return df[df[column].str.match(country_code_pattern, na=False)]
+   def clean_country_code(self, df, column):
+    """
+    Clean country codes.
+    :param df: DataFrame containing country codes.
+    :param column: Column name of the country codes.
+    :return: DataFrame with cleaned country codes.
+    """
+    df.loc[:, column] = df.loc[:, column].str.replace('GGB', 'GB')
+    country_code_pattern = r'\b[A-Z]{2}\b'
+    return df[df[column].str.match(country_code_pattern, na=False)]
 
     
     def clean_card_data(self, df):
@@ -253,14 +254,19 @@ class DataCleaning:
         Return dataframe
         '''
         cleaned_df = df.copy()
-        geolocator = Nominatim(user_agent="address_cleaner")
+        geolocator = Nominatim(user_agent="address_cleaner", timeout=10)
+
         for index, address in enumerate(cleaned_df[column]):
             if pd.notna(address):
-                location = geolocator.geocode(address, addressdetails=True, language="en")
-                if location and 'address' in location.raw:
-                    address_parts = location.raw['address']
-                    cleaned_address = ', '.join(filter(lambda x: x.strip(), [address_parts.get('road', ''), address_parts.get('house_number', ''), address_parts.get('city', ''), address_parts.get('state', ''), address_parts.get('postcode', ''), address_parts.get('country', '')]))
-                    cleaned_df.at[index, column] = cleaned_address
+                try:
+                    location = geolocator.geocode(address, addressdetails=True, language="en")
+                    if location and 'address' in location.raw:
+                        address_parts = location.raw['address']
+                        cleaned_address = ', '.join(filter(lambda x: x.strip(), [address_parts.get('road', ''), address_parts.get('house_number', ''), address_parts.get('city', ''), address_parts.get('state', ''), address_parts.get('postcode', ''), address_parts.get('country', '')]))
+                        cleaned_df.at[index, column] = cleaned_address
+                except (GeocoderTimedOut, GeocoderUnavailable) as e:
+                    print(f"Geocoding error for address '{address}': {e}")
+
         return cleaned_df
         
 
@@ -283,7 +289,7 @@ class DataCleaning:
         Return dataframe
         '''
         id_pattern = r'^[a-zA-Z]{2,3}-[a-zA-Z0-9]{6,8}'
-        df[column] = np.where(df[df[column].str.match(id_pattern)], df[column], np.nan)
+        df[column] = np.where(df[column].str.match(id_pattern), df[column], np.nan)
         return df
     
     def clean_numbers(self, df, column):
