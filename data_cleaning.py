@@ -162,16 +162,16 @@ class DataCleaning:
         df[column] = df[column].astype(str)
         return df[df[column].str.contains(r'^[a-zA-ZÄÖÜäöüßé\s\.\-\']+$', na=False)]
     
-   def clean_country_code(self, df, column):
-    """
-    Clean country codes.
-    :param df: DataFrame containing country codes.
-    :param column: Column name of the country codes.
-    :return: DataFrame with cleaned country codes.
-    """
-    df.loc[:, column] = df.loc[:, column].str.replace('GGB', 'GB')
-    country_code_pattern = r'\b[A-Z]{2}\b'
-    return df[df[column].str.match(country_code_pattern, na=False)]
+    def clean_country_code(self, df, column):
+        """
+        Clean country codes.
+        :param df: DataFrame containing country codes.
+        :param column: Column name of the country codes.
+        :return: DataFrame with cleaned country codes.
+        """
+        df.loc[:, column] = df.loc[:, column].str.replace('GGB', 'GB')
+        country_code_pattern = r'\b[A-Z]{2}\b'
+        return df[df[column].str.match(country_code_pattern, na=False)]
 
     
     def clean_card_data(self, df):
@@ -192,8 +192,8 @@ class DataCleaning:
         :param column: Column name of the card numbers.
         :return: DataFrame with cleaned card numbers.
         """
-        df[column] = df[column].astype(str)
-        df[column] = df[column].str.replace('?', '')
+        df.loc[:, column] = df.loc[:, column].astype(str)
+        df.loc[:, column] = df.loc[:, column].str.replace('?', '')
         card_pattern = r'^[0-9]{9,20}'
         return df[df[column].str.match(card_pattern, na=False)]
 
@@ -254,7 +254,7 @@ class DataCleaning:
         Return dataframe
         '''
         cleaned_df = df.copy()
-        geolocator = Nominatim(user_agent="address_cleaner", timeout=10)
+        geolocator = Nominatim(user_agent="address_cleaner", timeout=100)
 
         for index, address in enumerate(cleaned_df[column]):
             if pd.notna(address):

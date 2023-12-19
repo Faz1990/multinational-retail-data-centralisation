@@ -1,9 +1,12 @@
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import pandas as pd
 import logging
 import boto3
 import tabula
 import time
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -54,34 +57,50 @@ class DataExtractor:
             logging.error(f"API call failed with status code: {response.status_code}")
             response.raise_for_status()
 
+    def requests_retry_session(self, retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
+        """
+        Creates a requests session with retry logic.
+        :param retries: Number of retries.
+        :param backoff_factor: Backoff factor for retries.
+        :param status_forcelist: List of status codes that trigger a retry.
+        :return: requests Session with retry logic.
+        """
+        session = requests.Session()
+        retry = Retry(
+            total=retries,
+            read=retries,
+            connect=retries,
+            backoff_factor=backoff_factor,
+            status_forcelist=status_forcelist,
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        return session
+
     def retrieve_stores_data(self, api_endpoint, headers, num_stores):
         """
-        Retrieves data for each store from an API endpoint.
+        Retrieves data for each store from an API endpoint with retry logic.
         :param api_endpoint: URL of the API endpoint.
         :param headers: Dictionary containing HTTP headers for the request.
         :param num_stores: Total number of stores to retrieve.
         :return: DataFrame containing data of all stores.
         """
         store_data_list = []
+        session = self.requests_retry_session()
         for store_number in range(1, num_stores + 1):
             store_url = api_endpoint.format(store_number=store_number)
-            for attempt in range(3):  # Try up to 3 times for each store
-                try:
-                    response = requests.get(store_url, headers=headers)
-                    response.raise_for_status()
-                    store_data_list.append(response.json())
-                    break  # Success, so break out of the retry loop
-                except requests.exceptions.HTTPError as err:
-                    logging.error(f"Attempt {attempt+1} - HTTP error for store {store_number}: {err}")
-                    if response.status_code == 500:
-                        time.sleep(1)  # Wait for 1 second before retrying
-                    else:
-                        break  # For non-500 errors, break the loop without retrying
-                except Exception as e:
-                    logging.error(f"Attempt {attempt+1} - Unexpected error for store {store_number}: {e}")
-                    break  # Break on non-HTTP errors
-        return pd.DataFrame(store_data_list)
+            try:
+                response = session.get(store_url, headers=headers)
+                response.raise_for_status()
+                store_data_list.append(response.json())
+            except requests.exceptions.HTTPError as err:
+                logging.error(f"HTTP error for store {store_number}: {err}")
+            except Exception as e:
+                logging.error(f"Unexpected error for store {store_number}: {e}")
 
+        return pd.DataFrame(store_data_list)
+    
     def extract_from_s3(self, s3_url):
         """
         Extracts data from an S3 bucket.
