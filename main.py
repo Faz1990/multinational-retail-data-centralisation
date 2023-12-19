@@ -79,7 +79,7 @@ print("Successful Conversion")
 
 # Clean products data
 critical_columns_product = ['product_name', 'product_price', 'category']
-cleaned_product_data = data_cleaning.clean_products_data(product_data, critical_columns_product)
+cleaned_product_data = data_cleaning.clean_products_data(product_data)
 print("Products Successfully cleaned")
 
 # Upload cleaned product data to database

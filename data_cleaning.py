@@ -148,7 +148,7 @@ class DataCleaning:
         df = self.clean_price(df, 'product_price')
         df['date_added'] = self.fixed_date(df, 'date_added')
         df = self.clean_ean_number(df, 'EAN')
-        df = self.convert_product_weights(df, 'weight')
+        df = self.convert_product_weights(df)
         df = self.drop_na_values(df, critical_columns)
         return df
 
