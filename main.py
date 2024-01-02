@@ -21,7 +21,7 @@ local_engine = db_connector.local_engine
 
 # List available tables in the source database
 available_tables = db_connector.list_db_tables(source_engine)
-
+'''
 if 'legacy_users' in available_tables:
     # Extract and clean legacy user data
     legacy_users_data = data_extractor.read_rds_table(source_engine, 'legacy_users')
@@ -78,8 +78,8 @@ product_data = data_cleaning.convert_product_weights(product_data)
 print("Successful Conversion")
 
 # Clean products data
-critical_columns_product = ['product_name', 'product_price', 'category']
-cleaned_product_data = data_cleaning.clean_products_data(product_data)
+critical_columns = ['product_name', 'product_price', 'category']
+cleaned_product_data = data_cleaning.clean_products_data(product_data, critical_columns)
 print("Products Successfully cleaned")
 
 # Upload cleaned product data to database
@@ -95,12 +95,15 @@ print("Data Extracted Successfully")
 cleaned_orders_df = DataCleaning.clean_orders_data(orders_df)
 print("Data Cleaned Successfully")
 
+if 'level_0' in cleaned_orders_df.columns:
+    cleaned_orders_df.drop(columns=['level_0'], inplace=True)
+
 # Upload cleaned order data to database
 db_connector.upload_to_db(cleaned_orders_df, 'orders_table', local_engine)
 print("Successful Upload")
-
+'''
 # Extract JSON data from S3
-json_url = "https://your_bucket_name/date_details.json"
+json_url = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
 date_details_data = data_extractor.extract_json_from_s3(json_url)
 
 if date_details_data is not None:
@@ -109,12 +112,18 @@ if date_details_data is not None:
     # Convert JSON data to DataFrame
     date_details_df = pd.DataFrame(date_details_data)
 
-    # Clean the date details data
-    cleaned_date_details_df = DataCleaning.clean_date_details_data(date_details_df)
+    # Create a combined date string
+    date_details_df['date_string'] = date_details_df['year'].astype(str) + '-' + date_details_df['month'].astype(str).str.zfill(2) + '-' + date_details_df['day'].astype(str).str.zfill(2)
+
+    # Combine date string with time and apply error handling
+    date_details_df['datetime'] = pd.to_datetime(date_details_df['date_string'] + ' ' + date_details_df['timestamp'], errors='coerce')
+
+    # Drop the temporary date_string column
+    date_details_df.drop(columns=['date_string'], inplace=True)
     print("Date Details Data Cleaned Successfully")
 
     # Upload to the database
-    db_connector.upload_to_db(cleaned_date_details_df, 'dim_date_times', local_engine)
+    db_connector.upload_to_db(date_details_df, 'dim_date_times', local_engine)
     print("Date Details Data Successfully Uploaded")
 else:
     print("Failed to extract JSON data.")
