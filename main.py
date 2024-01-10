@@ -18,10 +18,10 @@ if __name__ == "__main__":
 # Initialize Database Engines
 source_engine = db_connector.engine
 local_engine = db_connector.local_engine
-
+'''
 # List available tables in the source database
 available_tables = db_connector.list_db_tables(source_engine)
-'''
+
 if 'legacy_users' in available_tables:
     # Extract and clean legacy user data
     legacy_users_data = data_extractor.read_rds_table(source_engine, 'legacy_users')
@@ -67,9 +67,9 @@ if num_stores > 0:
     db_connector.upload_to_db(cleaned_store_data, 'dim_store_details', local_engine)
 else:
     print("No stores to retrieve based on the API response.")
-
+'''
 # Extract data from S3
-s3_url = "s3://your_bucket_name/products.csv"
+s3_url = "s3://data-handling-public/products.csv"
 product_data = data_extractor.extract_from_s3(s3_url)
 print("successful Extraction")
 
@@ -85,7 +85,7 @@ print("Products Successfully cleaned")
 # Upload cleaned product data to database
 db_connector.upload_to_db(cleaned_product_data, 'dim_products', local_engine)
 print("Successful Upload")
-
+'''
 # Extract and Clean Order Data
 orders_table_name = "orders_table"
 orders_df = data_extractor.read_rds_table(db_connector.engine, orders_table_name)
@@ -101,7 +101,7 @@ if 'level_0' in cleaned_orders_df.columns:
 # Upload cleaned order data to database
 db_connector.upload_to_db(cleaned_orders_df, 'orders_table', local_engine)
 print("Successful Upload")
-'''
+
 # Extract JSON data from S3
 json_url = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
 date_details_data = data_extractor.extract_json_from_s3(json_url)
@@ -127,3 +127,4 @@ if date_details_data is not None:
     print("Date Details Data Successfully Uploaded")
 else:
     print("Failed to extract JSON data.")
+'''
