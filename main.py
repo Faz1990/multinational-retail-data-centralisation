@@ -44,7 +44,7 @@ if raw_card_data is not None:
 else:
     print("Failed to retrieve or parse PDF data.")
 
-
+'''
 # API Information
 headers = {"x-api-key": "yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX"}
 number_of_stores_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores"
@@ -85,7 +85,7 @@ print("Products Successfully cleaned")
 # Upload cleaned product data to database
 db_connector.upload_to_db(cleaned_product_data, 'dim_products', local_engine)
 print("Successful Upload")
-'''
+
 # Extract and Clean Order Data
 orders_table_name = "orders_table"
 orders_df = data_extractor.read_rds_table(db_connector.engine, orders_table_name)

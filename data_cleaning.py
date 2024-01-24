@@ -112,7 +112,7 @@ class DataCleaning:
         df = self.clean_email(df, 'email_address')
         df = self.clean_address(df, 'address')
         return df
-
+    
     def clean_store_data(self, df, critical_columns):
         """
         Clean store data in a DataFrame.
@@ -121,6 +121,7 @@ class DataCleaning:
         :return: Cleaned DataFrame.
         """
         df = df[df['store_code'] != 'NULL']
+        df = self.clean_code(df, 'store_code')  
         df = self.clean_country_code(df, 'country_code')
         df['opening_date'] = self.fixed_date(df, 'opening_date')
         df = self.clean_letters(df, 'store_type')
@@ -129,11 +130,10 @@ class DataCleaning:
         df = self.clean_latitude(df, 'latitude')
         df = self.clean_longitude(df, 'longitude')
         df = self.clean_numbers(df, 'staff_numbers')
-        df = pd.DataFrame(df)
-        df = self.clean_code(df, 'store_code')
         df = self.clean_address(df, 'address')
         df = self.drop_na_values(df, critical_columns)
         return df
+
 
 
     def clean_products_data(self, df, critical_columns):
@@ -288,10 +288,19 @@ class DataCleaning:
         Takes dataframe and column
         Return dataframe
         '''
-        id_pattern = r'^[a-zA-Z]{2,3}-[a-zA-Z0-9]{6,8}'
-        df[column] = np.where(df[column].str.match(id_pattern), df[column], np.nan)
+        # Trim whitespace
+        df.loc[:,column] = df.loc[:, column].str.strip()
+
+        # Updated regex pattern (if needed)
+        id_pattern = r'^[a-zA-Z]{2,3}-[a-zA-Z0-9]{6,9}$'
+
+        # Apply regex pattern
+        df.loc[:,column] = np.where(df[column].str.match(id_pattern), df[column], np.nan)
         return df
+
+
     
+
     def clean_numbers(self, df, column):
         '''
         To clean data without numbers
