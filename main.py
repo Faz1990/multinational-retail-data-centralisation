@@ -28,10 +28,11 @@ if 'legacy_users' in available_tables:
     cleaned_user_data = data_cleaning.clean_user_data(legacy_users_data)
     if cleaned_user_data is not None:
         db_connector.upload_to_db(cleaned_user_data, 'dim_users', local_engine)
+        print("successful upload of dim_users to postgreSQL")
 else:
     print("The table 'legacy_users' was not found in the source database.")
 
-
+'''
 # Fetch PDF Data
 raw_card_data = data_extractor.retrieve_pdf_data()
 
@@ -40,7 +41,7 @@ if raw_card_data is not None:
     cleaned_card_data = data_cleaning.clean_card_data(raw_card_data)
     if cleaned_card_data is not None:
         db_connector.upload_to_db(cleaned_card_data, 'dim_card_details', local_engine)
-        print("successful upload to postgreSQL")
+        print("successful upload of dim_card_details to postgreSQL")
 else:
     print("Failed to retrieve or parse PDF data.")
 
@@ -65,6 +66,7 @@ if num_stores > 0:
     critical_columns = ['address', 'store_code'] 
     cleaned_store_data = data_cleaning.clean_store_data(store_data, critical_columns)
     db_connector.upload_to_db(cleaned_store_data, 'dim_store_details', local_engine)
+    print('Successful upload of dim_store_details to postgreSQL')
 else:
     print("No stores to retrieve based on the API response.")
 
@@ -100,7 +102,7 @@ if 'level_0' in cleaned_orders_df.columns:
 
 # Upload cleaned order data to database
 db_connector.upload_to_db(cleaned_orders_df, 'orders_table', local_engine)
-print("Successful Upload")
+print('Successful upload of orders_table to postgreSQL')
 
 # Extract JSON data from S3
 json_url = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
@@ -124,6 +126,7 @@ if date_details_data is not None:
 
     # Upload to the database
     db_connector.upload_to_db(date_details_df, 'dim_date_times', local_engine)
-    print("Date Details Data Successfully Uploaded")
+    print('Successful upload of dim_date_times to postgreSQL')
 else:
     print("Failed to extract JSON data.")
+'''

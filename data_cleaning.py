@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 import uuid
 import re
-from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
-from geopy.geocoders import Nominatim
 
 
 
@@ -13,7 +11,9 @@ class DataCleaning:
     It includes functions for handling missing values, standardizing column names,
     converting weights, and more.
     """
-
+    def __init__(self):
+        pass
+    
     @staticmethod
     def drop_na_values(df, critical_columns=None):
         """
@@ -247,29 +247,38 @@ class DataCleaning:
         email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
         return df[df[column].str.match(email_pattern, na=False)]
  
+
     def clean_address(self, df, column):
         '''
-        To clean address
-        Takes dataframe and column
-        Return dataframe
+        Standardize and validate addresses without geocoding.
+        This method focuses on basic cleaning and format standardization.
+        Takes dataframe and column.
+        Returns dataframe with cleaned addresses.
         '''
-        cleaned_df = df.copy()
-        geolocator = Nominatim(user_agent="address_cleaner", timeout=100)
+        # Standardize address format: capitalize first letter of each word, remove extra spaces
+        df[column] = df[column].str.title().str.strip().replace('\s+', ' ', regex=True)
 
-        for index, address in enumerate(cleaned_df[column]):
-            if pd.notna(address):
-                try:
-                    location = geolocator.geocode(address, addressdetails=True, language="en")
-                    if location and 'address' in location.raw:
-                        address_parts = location.raw['address']
-                        cleaned_address = ', '.join(filter(lambda x: x.strip(), [address_parts.get('road', ''), address_parts.get('house_number', ''), address_parts.get('city', ''), address_parts.get('state', ''), address_parts.get('postcode', ''), address_parts.get('country', '')]))
-                        cleaned_df.at[index, column] = cleaned_address
-                except (GeocoderTimedOut, GeocoderUnavailable) as e:
-                    print(f"Geocoding error for address '{address}': {e}")
+        # Optional: Remove known invalid characters or patterns
+        df[column] = df[column].str.replace('[^a-zA-Z0-9\s,.-]', '', regex=True)
 
-        return cleaned_df
-        
+        # Optional: Replace common abbreviations to standardize (can be expanded based on known data)
+        abbreviations = {
+            ' St ': ' Street ',
+            ' Rd ': ' Road ',
+            ' Ave ': ' Avenue ',
+            ' Dr ': ' Drive ',
+            # Add more as needed
+        }
+        for abbr, full in abbreviations.items():
+            df[column] = df[column].str.replace(abbr, full, regex=False)
 
+        # Optional: Validate against a known list of addresses or patterns (basic example shown)
+        # This step requires a reference list of valid addresses or patterns to check against
+        # For example, ensuring addresses contain a number followed by a street name could be a basic validation
+        valid_address_pattern = r'\d+ [A-Za-z]+'
+        df['address_valid'] = df[column].str.contains(valid_address_pattern)
+
+        return df
 
     def clean_uuid(self, df, column):
         '''
