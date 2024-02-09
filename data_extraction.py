@@ -5,7 +5,7 @@ import pandas as pd
 import logging
 import boto3
 import tabula
-import time
+
 
 
 logging.basicConfig(level=logging.INFO)
@@ -79,28 +79,19 @@ class DataExtractor:
         return session
 
     def retrieve_stores_data(self, api_endpoint, headers, num_stores):
-        """
-        Retrieves data for each store from an API endpoint with retry logic.
-        :param api_endpoint: URL of the API endpoint.
-        :param headers: Dictionary containing HTTP headers for the request.
-        :param num_stores: Total number of stores to retrieve.
-        :return: DataFrame containing data of all stores.
-        """
         store_data_list = []
-        session = self.requests_retry_session()
-        for store_number in range(1, num_stores + 1):
+        for store_number in range(0, num_stores + 1):
             store_url = api_endpoint.format(store_number=store_number)
             try:
-                response = session.get(store_url, headers=headers)
-                response.raise_for_status()
+                response = requests.get(store_url, headers=headers)
+                response.raise_for_status()  
                 store_data_list.append(response.json())
             except requests.exceptions.HTTPError as err:
                 logging.error(f"HTTP error for store {store_number}: {err}")
             except Exception as e:
                 logging.error(f"Unexpected error for store {store_number}: {e}")
-
         return pd.DataFrame(store_data_list)
-    
+
     def extract_from_s3(self, s3_url):
         """
         Extracts data from an S3 bucket.

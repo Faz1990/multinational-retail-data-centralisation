@@ -107,31 +107,29 @@ class DataCleaning:
         df = self.clean_country_code(df, 'country_code')
         df['date_of_birth'] = self.fixed_date(df, 'date_of_birth')
         df['join_date'] = self.fixed_date(df, 'join_date')
-        df = self.clean_uuid(df, 'user_uuid')
+        #df = self.clean_uuid(df, 'user_uuid')
         df = self.clean_phone_number(df, 'phone_number', 'country_code')
         df = self.clean_email(df, 'email_address')
         df = self.clean_address(df, 'address')
         return df
     
-    def clean_store_data(self, df, critical_columns):
+    def clean_store_data(self, df):
         """
         Clean store data in a DataFrame.
         :param df: DataFrame containing store data.
         :param critical_columns: Columns considered critical for cleaning.
         :return: Cleaned DataFrame.
         """
-        df = df[df['store_code'] != 'NULL']
-        df = self.clean_code(df, 'store_code')  
+        
+        df = self.clean_store_code(df, 'store_code')  
         df = self.clean_country_code(df, 'country_code')
         df['opening_date'] = self.fixed_date(df, 'opening_date')
-        df = self.clean_letters(df, 'store_type')
         df = self.clean_letters(df, 'locality')
         df = self.clean_continent(df, 'continent')
         df = self.clean_latitude(df, 'latitude')
         df = self.clean_longitude(df, 'longitude')
         df = self.clean_numbers(df, 'staff_numbers')
         df = self.clean_address(df, 'address')
-        df = self.drop_na_values(df, critical_columns)
         return df
 
 
@@ -154,13 +152,20 @@ class DataCleaning:
 
     def clean_letters(self, df, column):
         """
-        Clean columns with only letters.
+        Clean columns with only letters by removing unwanted characters, not by excluding rows.
         :param df: DataFrame containing letter columns.
         :param column: Column name of the letter columns.
         :return: DataFrame with cleaned letter columns.
         """
+        # Convert the column to string type
         df[column] = df[column].astype(str)
-        return df[df[column].str.contains(r'^[a-zA-ZÄÖÜäöüßé\s\.\-\']+$', na=False)]
+        
+        # Replace characters not matching the pattern with an empty string (essentially removing them)
+        # This regex matches any character NOT in the set and replaces it with an empty string
+        df[column] = df[column].str.replace(r'[^a-zA-ZÄÖÜäöüßé\s\.\-\']', '', regex=True)
+        
+        return df
+
     
     def clean_country_code(self, df, column):
         """
@@ -255,26 +260,15 @@ class DataCleaning:
         Takes dataframe and column.
         Returns dataframe with cleaned addresses.
         '''
-        # Standardize address format: capitalize first letter of each word, remove extra spaces
-        df[column] = df[column].str.title().str.strip().replace('\s+', ' ', regex=True)
+      # Standardize address format: capitalize first letter of each word, remove extra spaces
+        df[column] = df[column].str.title().str.strip().replace(r'\s+', ' ', regex=True)
 
         # Optional: Remove known invalid characters or patterns
-        df[column] = df[column].str.replace('[^a-zA-Z0-9\s,.-]', '', regex=True)
+        df[column] = df[column].str.replace(r'(?i)\bst\b', 'Street', regex=True)
+        df[column] = df[column].str.replace(r'(?i)\brd\b', 'Road', regex=True)
+        df[column] = df[column].str.replace(r'(?i)\bave\b', 'Avenue', regex=True)
+        df[column] = df[column].str.replace(r'(?i)\bdr\b', 'Drive', regex=True)
 
-        # Optional: Replace common abbreviations to standardize (can be expanded based on known data)
-        abbreviations = {
-            ' St ': ' Street ',
-            ' Rd ': ' Road ',
-            ' Ave ': ' Avenue ',
-            ' Dr ': ' Drive ',
-            # Add more as needed
-        }
-        for abbr, full in abbreviations.items():
-            df[column] = df[column].str.replace(abbr, full, regex=False)
-
-        # Optional: Validate against a known list of addresses or patterns (basic example shown)
-        # This step requires a reference list of valid addresses or patterns to check against
-        # For example, ensuring addresses contain a number followed by a street name could be a basic validation
         valid_address_pattern = r'\d+ [A-Za-z]+'
         df['address_valid'] = df[column].str.contains(valid_address_pattern)
 
@@ -291,7 +285,7 @@ class DataCleaning:
         return df[df[column].str.match(id_pattern, na=False)]
     
     
-    def clean_code(self, df, column):
+    def clean_store_code(self, df, column):
         '''
         To clean store code
         Takes dataframe and column
@@ -338,7 +332,8 @@ class DataCleaning:
         Return dataframe
         '''
         df[column] = pd.to_numeric(df[column], errors='coerce')
-        df[column] = np.where((df[column] >= -90), df[column], np.nan )
+        
+        df[column] = np.where((df[column] >= -90) & (df[column] <= 90), df[column], np.nan)
         return df
     
     def clean_longitude(self, df, column):

@@ -2,6 +2,7 @@ from database_utils import DatabaseConnector
 from data_cleaning import DataCleaning
 from data_extraction import DataExtractor
 import pandas as pd
+import numpy as np
 """
 This script demonstrates a typical data engineering workflow where data is extracted from various sources,
 cleaned, transformed, and finally loaded into a database. It utilizes custom classes for database operations,
@@ -17,7 +18,7 @@ if __name__ == "__main__":
 # Initialize Database Engines
 source_engine = db_connector.engine
 local_engine = db_connector.local_engine
-"""
+
 # List available tables in the source database
 available_tables = db_connector.list_db_tables(source_engine)
 
@@ -31,7 +32,7 @@ if 'legacy_users' in available_tables:
 else:
         print("The table 'legacy_users' was not found in the source database.")
 
-
+"""
 # Fetch PDF Data
 raw_card_data = data_extractor.retrieve_pdf_data()
 
@@ -45,6 +46,7 @@ else:
     print("Failed to retrieve or parse PDF data.")
 
 
+
 # API Information
 headers = {"x-api-key": "yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX"}
 number_of_stores_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores"
@@ -53,22 +55,29 @@ store_details_endpoint = "https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com
 # Step 1: List the number of stores
 num_stores = data_extractor.list_number_of_stores(number_of_stores_endpoint, headers)
 
-if num_stores > 0:
+if num_stores >= 0:
     # Step 2: Extract store data
     store_data = data_extractor.retrieve_stores_data(store_details_endpoint, headers, num_stores)
     print("Successful data extraction.")
     
-    # Inspect the DataFrame columns
-    print("DataFrame columns:", store_data.columns)
-
+    valid_store_types = ['Local', 'Web Portal', 'Super Store', 'Mall Kiosk', 'Outlet']
+    store_data = store_data[store_data['store_type'].isin(valid_store_types) | store_data['store_type'].isnull()]
+    
+    # Replace 'NULL' string with actual NaN values for consistency
+    store_data['store_type'].replace('NULL', np.nan, inplace=True)
+    print(store_data[store_data['store_type'] == 'Web Portal']) 
+    
     # Step 3: Clean store data
-    critical_columns = ['address', 'store_code'] 
-    cleaned_store_data = data_cleaning.clean_store_data(store_data, critical_columns)
+   
+    cleaned_store_data = data_cleaning.clean_store_data(store_data)
+    print(cleaned_store_data[cleaned_store_data['store_type'] == 'Web Portal'])
+    
     db_connector.upload_to_db(cleaned_store_data, 'dim_store_details', local_engine)
     print('Successful upload of dim_store_details to postgreSQL')
 else:
     print("No stores to retrieve based on the API response.")
-    """
+
+
     
 # Extract data from S3
 s3_url = "s3://data-handling-public/products.csv"
@@ -129,3 +138,6 @@ if date_details_data is not None:
     print('Successful upload of dim_date_times to postgreSQL')
 else:
     print("Failed to extract JSON data.")
+
+
+"""
