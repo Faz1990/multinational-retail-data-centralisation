@@ -1,1 +1,2 @@
-![Business Query 1](Images/Buissiness Query 1.png)
+![Business Query 1](/Images/Buissiness%20Query%201.png)
+
