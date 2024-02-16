@@ -169,6 +169,26 @@ Local stores are the standout performers, generating sales of over 1.1 million e
 The data suggests that while Local stores should be the primary focus for further investment and expansion in Germany, other store types also represent valuable opportunities for growth.
 
 
+# Sales Efficiency Analysis by Year
+
+The sales department has been keen to determine the efficiency of sales over the years by looking at the average time taken between each sale. This metric is critical for evaluating the performance and responsiveness of our sales strategy.
+
+The following data was gathered to showcase the average time between sales for each year:
+
+| Year | Average Time Between Sales |
+|------|----------------------------|
+| 2022 | 2 hours, 13 minutes, 2 seconds, 200 milliseconds |
+| 2021 | 2 hours, 11 minutes, 44 seconds, 445 milliseconds |
+| ...  | ... |
+| 1999 | 2 hours, 15 minutes, 10 seconds, 246 milliseconds |
+
+The data indicates that in recent years, such as 2022, the time taken between sales has been relatively short, suggesting a quicker sales turnover. In comparison, previous years such as 1999, show a slightly longer duration between sales, which could indicate different market conditions or sales strategies.
+
+![Average Time Between Sales](/path/to/Buissiness%20Query%209.png)
+
+This analysis will help the sales team to understand temporal trends in sales efficiency and to pinpoint periods that may require further investigation or strategic adjustments.
+
+
 
 
 
