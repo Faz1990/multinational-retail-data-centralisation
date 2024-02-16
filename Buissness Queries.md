@@ -184,7 +184,7 @@ The following data was gathered to showcase the average time between sales for e
 
 The data indicates that in recent years, such as 2022, the time taken between sales has been relatively short, suggesting a quicker sales turnover. In comparison, previous years such as 1999, show a slightly longer duration between sales, which could indicate different market conditions or sales strategies.
 
-![Average Time Between Sales](/path/to/Buissiness%20Query%209.png)
+![Average Time Between Sales](/Images/Buissiness%20Query%209.png)
 
 This analysis will help the sales team to understand temporal trends in sales efficiency and to pinpoint periods that may require further investigation or strategic adjustments.
 
