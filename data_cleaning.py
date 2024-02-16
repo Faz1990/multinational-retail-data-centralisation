@@ -51,22 +51,17 @@ class DataCleaning:
         if pd.isna(weight):
             return None
         if isinstance(weight, float):
-            # Assuming the weight is already in kilograms
             return weight
         if isinstance(weight, str):
-            # Remove non-numeric characters except for the decimal point
             numeric_weight = float(''.join(filter(lambda x: x.isdigit() or x == '.', weight)))
 
-            # Convert to kilograms if needed
             if 'ml' in weight or 'g' in weight:
-                return numeric_weight / 1000  # Convert grams or milliliters to kilograms
+                return numeric_weight / 1000  
             elif 'kg' in weight:
-                return numeric_weight  # Already in kilograms
+                return numeric_weight 
             else:
-                # Handle other units as needed
                 pass
         else:
-            # Handle non-string, non-float types
             return None
         
     @staticmethod
@@ -100,14 +95,14 @@ class DataCleaning:
         :return: Cleaned DataFrame.
         """
         df = df.replace(['NaN', 'NULL', 'NaT'], np.nan)
-        df = df.dropna()
+        df = df.dropna(subset=['user_uuid'])
         df = self.clean_letters(df, 'first_name')
         df = self.clean_letters(df, 'last_name')
         df = self.clean_letters(df, 'country')
         df = self.clean_country_code(df, 'country_code')
         df['date_of_birth'] = self.fixed_date(df, 'date_of_birth')
         df['join_date'] = self.fixed_date(df, 'join_date')
-        #df = self.clean_uuid(df, 'user_uuid')
+        df = self.clean_uuid(df, 'user_uuid')
         df = self.clean_phone_number(df, 'phone_number', 'country_code')
         df = self.clean_email(df, 'email_address')
         df = self.clean_address(df, 'address')
@@ -142,7 +137,7 @@ class DataCleaning:
         :return: Cleaned DataFrame.
         """
         df = df.replace(['NaN', 'NULL', 'NaT'], np.nan)
-        df = df.dropna()
+        df = df.dropna(subset=['product_code'])
         df = self.clean_price(df, 'product_price')
         df['date_added'] = self.fixed_date(df, 'date_added')
         df = self.clean_ean_number(df, 'EAN')
@@ -157,13 +152,9 @@ class DataCleaning:
         :param column: Column name of the letter columns.
         :return: DataFrame with cleaned letter columns.
         """
-        # Convert the column to string type
+        
         df[column] = df[column].astype(str)
-        
-        # Replace characters not matching the pattern with an empty string (essentially removing them)
-        # This regex matches any character NOT in the set and replaces it with an empty string
         df[column] = df[column].str.replace(r'[^a-zA-ZÄÖÜäöüßé\s\.\-\']', '', regex=True)
-        
         return df
 
     
@@ -244,13 +235,17 @@ class DataCleaning:
 
     def clean_email(self, df, column):
         '''
-        To clean emails
-        Takes dataframe and column
-        Return dataframe
+        Cleans email addresses by replacing invalid emails with np.nan.
+        Preserves all rows, marking invalid email data for potential further action.
+        :param df: DataFrame containing user data.
+        :param column: Column name containing email addresses.
+        :return: DataFrame with the email column cleaned.
         '''
-        df[column] = df[column].astype(str)
         email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-        return df[df[column].str.match(email_pattern, na=False)]
+        
+        df[column] = df[column].where(df[column].str.match(email_pattern, na=False), np.nan)
+        return df
+
  
 
     def clean_address(self, df, column):
@@ -260,10 +255,9 @@ class DataCleaning:
         Takes dataframe and column.
         Returns dataframe with cleaned addresses.
         '''
-      # Standardize address format: capitalize first letter of each word, remove extra spaces
+     
         df[column] = df[column].str.title().str.strip().replace(r'\s+', ' ', regex=True)
 
-        # Optional: Remove known invalid characters or patterns
         df[column] = df[column].str.replace(r'(?i)\bst\b', 'Street', regex=True)
         df[column] = df[column].str.replace(r'(?i)\brd\b', 'Road', regex=True)
         df[column] = df[column].str.replace(r'(?i)\bave\b', 'Avenue', regex=True)
@@ -291,13 +285,9 @@ class DataCleaning:
         Takes dataframe and column
         Return dataframe
         '''
-        # Trim whitespace
+        
         df.loc[:,column] = df.loc[:, column].str.strip()
-
-        # Updated regex pattern (if needed)
         id_pattern = r'^[a-zA-Z]{2,3}-[a-zA-Z0-9]{6,9}$'
-
-        # Apply regex pattern
         df.loc[:,column] = np.where(df[column].str.match(id_pattern), df[column], np.nan)
         return df
 
@@ -332,7 +322,6 @@ class DataCleaning:
         Return dataframe
         '''
         df[column] = pd.to_numeric(df[column], errors='coerce')
-        
         df[column] = np.where((df[column] >= -90) & (df[column] <= 90), df[column], np.nan)
         return df
     
@@ -354,17 +343,21 @@ class DataCleaning:
         pattern = r'^£(\d+(\.\d{2}))$'
         df[column] = np.where(df[column].str.match(pattern), df[column], np.nan)
         df = df.dropna(subset='product_price')
-
         return df
 
     def clean_ean_number(self, df, column):
         '''
-        To clean ean numbers
-        Takes dataframe and column
-        Return dataframe
+        To clean ean numbers.
+        Takes dataframe and column.
+        Ensures EAN numbers are numeric and have a valid length (up to 13 digits).
+        Invalid or improperly formatted EAN numbers are replaced with np.nan.
+        :param df: DataFrame containing EAN numbers.
+        :param column: Column name containing EAN numbers.
+        :return: DataFrame with cleaned EAN numbers.
         '''
-        df[column] = pd.to_numeric(df[column], errors='coerce')
-        df[column] = np.where(len(df[column]) <= 13, df[column], np.nan)
+       
+        df[column] = df[column].astype(str)
+        df[column] = df[column].apply(lambda x: x if x.isdigit() and len(x) <= 13 else np.nan)
         return df
 
     @staticmethod
