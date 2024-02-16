@@ -68,5 +68,23 @@ The accompanying visual representation of the data provides a clear overview of 
 This data is essential for making informed decisions on resource allocation and optimizing operations to capitalize on high-demand periods.
 
 
+# Online vs. Offline Sales Analysis
+
+In a strategic move to bolster our digital marketplace, we've analyzed our sales channels to compare online and offline performance. This insight is critical for directing our efforts to enhance online sales.
+
+Here's what we've discovered:
+
+- **Online Sales**: A total of 26,957 sales were made online, with 107,739 products sold.
+- **Offline Sales**: Offline channels accounted for 93,166 sales, with 374,047 products sold.
+
+The data indicates that while offline sales have a higher volume of products sold, online sales also represent a significant portion of our market. This suggests there is substantial potential for growth in the online segment.
+
+![Online vs. Offline Sales](Images/Buissiness%20Query%204.png)
+
+Moving forward, a focused strategy on improving the online shopping experience and marketing can be expected to further increase our online sales figures. This will involve enhancing our e-commerce platform, optimizing digital marketing campaigns, and providing exclusive online promotions.
+
+*The accompanying chart illustrates the distribution of sales across our online and offline channels.*
+
+
 
 
