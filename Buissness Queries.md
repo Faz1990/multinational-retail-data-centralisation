@@ -35,7 +35,38 @@ These figures represent the top localities in terms of store count and will be p
 
 The insights derived from this analysis will guide our next steps in the consolidation process, ensuring we maintain a balanced distribution of stores to best serve our customers while optimizing operational efficiency.
 
-*The full details of the analysis can be found in the attached image.*
+
+# Monthly Sales Performance
+
+We have conducted a detailed analysis to identify which months yield the highest sales. This information is pivotal for our strategic planning, allowing us to align our marketing campaigns and inventory management with demonstrated sales trends.
+
+The following are our top-performing months by total sales:
+
+| Month | Total Sales |
+|-------|------------:|
+| 8     |  673,295.68 |
+| 1     |  668,041.45 |
+| 10    |  657,335.84 |
+| 5     |  650,321.43 |
+| 7     |  645,741.70 |
+| 3     |  645,462.99 |
+| 6     |  635,578.99 |
+| 12    |  635,329.08 |
+| 9     |  633,993.62 |
+| 11    |  630,757.07 |
+| 4     |  630,022.77 |
+| 2     |  614,652.99 |
+
+August stands out as the month with the highest sales, followed by January and October, indicating a significant increase in customer purchasing activity during these periods.
+
+The accompanying visual representation of the data provides a clear overview of our sales distribution throughout the year and is included below for reference:
+
+![Monthly Sales Distribution](Images/Buissiness%20Query%203.png)
+
+*Note: The sales figures are reported in the company's operating currency and have been rounded to the nearest decimal for clarity.*
+
+This data is essential for making informed decisions on resource allocation and optimizing operations to capitalize on high-demand periods.
+
 
 
 
