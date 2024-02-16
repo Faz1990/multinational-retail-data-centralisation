@@ -149,6 +149,26 @@ This overview provides the operations team with a clear picture of our staffing 
 
 
 
+# Sales Performance by Store Type in Germany
+
+The sales team is strategizing to expand our presence in Germany and has analyzed the sales performance by store type within the country. The goal is to identify which store types are the most lucrative and thus should be the focus of expansion efforts.
+
+The analysis presents the following data on sales by store type:
+
+| Store Type  | Total Sales (€) | Country |
+|-------------|-----------------|---------|
+| Local       | 1,109,909.59    | DE      |
+| Super Store | 384,625.03      | DE      |
+| Mall Kiosk  | 247,634.20      | DE      |
+| Outlet      | 198,373.57      | DE      |
+
+Local stores are the standout performers, generating sales of over 1.1 million euros. Super Stores and Mall Kiosks also contribute significantly to the revenue, followed by Outlets.
+
+![Sales by Store Type in Germany](/path/to/Buissiness%20Query%208.png)
+
+The data suggests that while Local stores should be the primary focus for further investment and expansion in Germany, other store types also represent valuable opportunities for growth.
+
+
 
 
 
