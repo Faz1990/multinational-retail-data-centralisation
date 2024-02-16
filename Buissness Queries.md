@@ -83,7 +83,26 @@ The data indicates that while offline sales have a higher volume of products sol
 
 Moving forward, a focused strategy on improving the online shopping experience and marketing can be expected to further increase our online sales figures. This will involve enhancing our e-commerce platform, optimizing digital marketing campaigns, and providing exclusive online promotions.
 
-*The accompanying chart illustrates the distribution of sales across our online and offline channels.*
+
+# Store Type Revenue Analysis
+
+The sales team has conducted an analysis to identify which store types are generating the most revenue. This information is critical for strategic focus and resource allocation.
+
+Here's a breakdown of the total sales and their percentage contribution by store type:
+
+- **Local**: The local stores are leading in revenue generation with a total of £3,440,896.52, accounting for 44.57% of the total sales.
+- **Web Portal**: Follows with significant online sales totaling £1,726,547.45, which represents 22.35% of the overall sales.
+- **Super Store**: Has also shown strong performance with total sales of £1,224,293.65, contributing 15.85% to the total sales.
+- **Mall Kiosk**: These smaller outlets have generated £698,791.60, making up 9.05% of the total sales.
+- **Outlet**: With total sales of £631,804.89, outlets contribute 8.18% to the total sales.
+
+The data clearly shows that local stores are the primary revenue drivers, while web portals are a growing and significant channel.
+
+![Sales Distribution by Store Type](Images/Buissiness%20Query%205.png)
+
+This revenue distribution will be instrumental in guiding the sales team's efforts as we continue to refine our sales strategies and maximize revenue across all channels.
+
+*The pie chart reflects the sales distribution and highlights areas with the greatest potential for revenue growth.*
 
 
 
