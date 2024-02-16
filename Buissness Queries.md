@@ -128,7 +128,27 @@ Notably, March 1994 emerged as the top month historically, with sales just shy o
 
 This data underscores the company's ability to maintain a strong market presence and will serve as a foundation for future growth initiatives.
 
-*Data is rounded to the nearest pound for clarity and ease of discussion.*
+
+# Global Staff Distribution
+
+The operations team has conducted an inquiry into the total number of staff across all global locations where the company operates. This data is essential for understanding workforce distribution and making informed decisions about staffing needs.
+
+The following figures showcase the total staff numbers per country:
+
+| Country Code | Total Staff Numbers |
+|--------------|---------------------|
+| GB           | 13,132              |
+| DE           | 6,054               |
+| US           | 1,304               |
+
+The United Kingdom (GB) stands out as the country with the highest number of staff, indicating a strong presence and potentially the central hub of our operations. Germany (DE) follows as the second-largest, with the United States (US) having a considerable number of employees as well.
+
+![Staff Numbers by Country](Images/Buissiness%20Query%207.png)
+
+This overview provides the operations team with a clear picture of our staffing distribution, which will be instrumental in future operational planning and resource allocation.
+
+
+
 
 
 
