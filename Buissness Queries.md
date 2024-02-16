@@ -102,8 +102,6 @@ The data clearly shows that local stores are the primary revenue drivers, while 
 
 This revenue distribution will be instrumental in guiding the sales team's efforts as we continue to refine our sales strategies and maximize revenue across all channels.
 
-*The pie chart reflects the sales distribution and highlights areas with the greatest potential for revenue growth.*
-
 
 
 
