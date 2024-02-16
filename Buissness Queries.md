@@ -103,5 +103,32 @@ The data clearly shows that local stores are the primary revenue drivers, while 
 This revenue distribution will be instrumental in guiding the sales team's efforts as we continue to refine our sales strategies and maximize revenue across all channels.
 
 
+# Historical Sales Performance by Month and Year
+
+To provide stakeholders with assurances about the company's recent performance, a historical analysis of sales has been conducted. This review focuses on identifying the months and years with the highest sales to demonstrate sustained success over time.
+
+The analysis reveals the following periods with the highest sales:
+
+| Year | Month | Total Sales |
+|------|-------|-------------|
+| 1994 | 03    | 27,936.77   |
+| 2019 | 01    | 27,356.14   |
+| 2009 | 08    | 27,091.67   |
+| 1997 | 11    | 26,679.98   |
+| 2018 | 12    | 26,310.97   |
+| 2019 | 08    | 26,277.72   |
+| 2017 | 09    | 26,236.67   |
+| 2010 | 05    | 25,798.12   |
+| 1996 | 08    | 25,648.29   |
+| 2000 | 01    | 25,614.54   |
+
+Notably, March 1994 emerged as the top month historically, with sales just shy of £28,000. Recent years like 2019, 2018, and 2017 also feature prominently in the top months, indicating robust and consistent performance.
+
+![Sales Performance](Images/Buissiness%20Query%206.png)
+
+This data underscores the company's ability to maintain a strong market presence and will serve as a foundation for future growth initiatives.
+
+*Data is rounded to the nearest pound for clarity and ease of discussion.*
+
 
 
