@@ -11,3 +11,6 @@ SELECT MAX(LENGTH(country_code)) FROM dim_users
 SELECT DISTINCT user_uuid
 FROM orders_table
 WHERE user_uuid NOT IN (SELECT user_uuid FROM dim_users);
+
+ALTER TABLE dim_users
+ALTER COLUMN user_uuid TYPE UUID USING(user_uuid::UUID)

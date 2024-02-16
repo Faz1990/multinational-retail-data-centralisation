@@ -18,7 +18,7 @@ if __name__ == "__main__":
 # Initialize Database Engines
 source_engine = db_connector.engine
 local_engine = db_connector.local_engine
-"""
+
 # List available tables in the source database
 available_tables = db_connector.list_db_tables(source_engine)
 
@@ -97,7 +97,7 @@ print("Products Successfully cleaned")
 # Upload cleaned product data to database
 db_connector.upload_to_db(cleaned_product_data, 'dim_products', local_engine)
 print("Successful Upload")
-"
+
 # Extract and Clean Order Data
 orders_table_name = "orders_table"
 orders_df = data_extractor.read_rds_table(db_connector.engine, orders_table_name)
@@ -113,7 +113,7 @@ if 'level_0' in cleaned_orders_df.columns:
 # Upload cleaned order data to database
 db_connector.upload_to_db(cleaned_orders_df, 'orders_table', local_engine)
 print('Successful upload of orders_table to postgreSQL')
-"""
+
 # Extract JSON data from S3
 json_url = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
 date_details_data = data_extractor.extract_json_from_s3(json_url)
