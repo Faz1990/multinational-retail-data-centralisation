@@ -164,7 +164,7 @@ The analysis presents the following data on sales by store type:
 
 Local stores are the standout performers, generating sales of over 1.1 million euros. Super Stores and Mall Kiosks also contribute significantly to the revenue, followed by Outlets.
 
-![Sales by Store Type in Germany](/path/to/Buissiness%20Query%208.png)
+![Sales by Store Type in Germany](Images/Buissiness%20Query%208.png)
 
 The data suggests that while Local stores should be the primary focus for further investment and expansion in Germany, other store types also represent valuable opportunities for growth.
 
